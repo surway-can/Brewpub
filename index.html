@@ -6,9 +6,9 @@
 <title>가상 브루펍 AI 사무실 본부</title>
 <style>
   :root {
-    --bg-dark: #14110f;
+    --bg-dark: #231d19;
     --panel-bg: #1e1916;
-    --border-color: #362c25;
+    --border-color: #3a3029;
     --accent-amber: #e09f3e;
     --accent-green: #4ea8de;
     --text-main: #f3ece4;
@@ -17,74 +17,76 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif; }
   body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
+  /* 좌측 메인 오피스 뷰 */
   .office-viewport {
     flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle at center, #2b221c 0%, #14110f 100%);
-    overflow: hidden; padding: 24px;
+    background: radial-gradient(circle at center, #8a7262 0%, #3d3129 65%, #1c1714 100%);
+    overflow: hidden; padding: 20px;
   }
   .top-badge {
-    position: absolute; top: 20px; left: 20px; background: rgba(20, 17, 15, 0.85);
-    border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px;
-    font-size: 13px; color: var(--accent-amber); backdrop-filter: blur(8px); z-index: 10;
+    position: absolute; top: 18px; left: 18px; background: rgba(24, 19, 16, 0.85);
+    border: 1px solid rgba(224, 159, 62, 0.4); padding: 8px 16px; border-radius: 20px;
+    font-size: 13px; color: #f7d08a; backdrop-filter: blur(8px); z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
 
+  /* 1:1 정사각형 아이소메트릭 오피스 컨테이너 */
   .isometric-room {
-    width: 100%; max-width: 960px; aspect-ratio: 16 / 10; position: relative;
+    height: min(88vh, 820px);
+    width: min(88vh, 820px);
+    aspect-ratio: 1 / 1;
+    position: relative;
     background-image: url('./office-bg.png');
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
-    border: 2px solid #4a3b31; border-radius: 24px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-    overflow: hidden;
-  }
-  .isometric-room::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at center, rgba(0,0,0,0.05) 45%, rgba(14, 11, 9, 0.55) 100%);
-    pointer-events: none;
+    border-radius: 28px;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.55);
   }
 
+  /* AI 직원 아바타 & 말풍선 */
   .agent-node {
     position: absolute; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; align-items: center;
     transition: all 0.4s ease; cursor: pointer; z-index: 5;
   }
-  .agent-node:hover { transform: translate(-50%, -54%) scale(1.06); z-index: 20; }
+  .agent-node:hover { transform: translate(-50%, -55%) scale(1.07); z-index: 20; }
 
   .speech-bubble {
-    background: rgba(255, 253, 249, 0.96); color: #1c1714; padding: 7px 12px; border-radius: 12px;
-    font-size: 12px; font-weight: 700; max-width: 195px; text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.65); margin-bottom: 8px; position: relative;
+    background: rgba(255, 253, 249, 0.97); color: #1c1714; padding: 6px 11px; border-radius: 12px;
+    font-size: 11.5px; font-weight: 700; max-width: 175px; text-align: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35); margin-bottom: 6px; position: relative;
     line-height: 1.35; border: 2px solid var(--accent-amber);
-    backdrop-filter: blur(4px);
   }
   .speech-bubble::after {
     content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
     border-width: 7px 7px 0; border-style: solid; border-color: var(--accent-amber) transparent transparent;
   }
   .speech-bubble.idle {
-    background: rgba(28, 23, 20, 0.88); color: #d6cbc1; border-color: #5c4d43; font-weight: 500;
+    background: rgba(34, 28, 24, 0.9); color: #e6dcd3; border-color: #6e5c4f; font-weight: 500;
   }
-  .speech-bubble.idle::after { border-color: #5c4d43 transparent transparent; }
+  .speech-bubble.idle::after { border-color: #6e5c4f transparent transparent; }
 
   .avatar-circle {
-    width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 21px; background: rgba(30, 24, 20, 0.92); border: 2px solid var(--accent-amber);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.7); position: relative;
+    width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 19px; background: rgba(30, 24, 20, 0.94); border: 2px solid var(--accent-amber);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.45); position: relative;
   }
   .status-dot {
-    width: 11px; height: 11px; border-radius: 50%; position: absolute; bottom: 0; right: 0;
+    width: 10px; height: 10px; border-radius: 50%; position: absolute; bottom: 0; right: 0;
     border: 2px solid #1e1916;
   }
   .status-active { background: #38b000; box-shadow: 0 0 8px #38b000; }
   .status-wait { background: #f4a261; }
 
   .name-tag {
-    margin-top: 5px; background: rgba(15, 12, 10, 0.9); padding: 3px 10px;
-    border-radius: 10px; font-size: 11px; font-weight: 600; color: #f3ece4;
-    border: 1px solid #4a3b31; white-space: nowrap;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    margin-top: 4px; background: rgba(20, 16, 13, 0.9); padding: 2px 9px;
+    border-radius: 10px; font-size: 10.5px; font-weight: 600; color: #f3ece4;
+    border: 1px solid #59483c; white-space: nowrap;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
   }
 
+  /* 우측 사이드바 (노션 실시간 현황판) */
   .sidebar {
     width: 360px; background: var(--panel-bg); border-left: 1px solid var(--border-color);
     display: flex; flex-direction: column; padding: 20px; overflow-y: auto;
@@ -173,12 +175,13 @@
 </div>
 
 <script>
+// 일러스트 속 의자와 소파 위치에 맞춘 정밀 좌표
 const AGENTS = [
-  { id: "생산·R&D팀", name: "Claude · 양조연구원", icon: "🌾", x: 26, y: 32 },
-  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 72, y: 30 },
-  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 28, y: 74 },
-  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 62, y: 76 },
-  { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 85, y: 70 }
+  { id: "생산·R&D팀", name: "Claude · 양조연구원", icon: "🌾", x: 27, y: 42 },
+  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 40, y: 35 },
+  { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 59, y: 48 },
+  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 35, y: 66 },
+  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 81, y: 47 }
 ];
 
 async function loadDashboard() {
