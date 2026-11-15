@@ -17,61 +17,59 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif; }
   body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-  /* 좌측 메인 오피스 뷰 */
   .office-viewport {
     flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
     background: radial-gradient(circle at center, #2b221c 0%, #14110f 100%);
-    overflow: hidden;
+    overflow: hidden; padding: 24px;
   }
   .top-badge {
-    position: absolute; top: 20px; left: 20px; background: rgba(30, 25, 22, 0.85);
+    position: absolute; top: 20px; left: 20px; background: rgba(20, 17, 15, 0.85);
     border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px;
-    font-size: 13px; color: var(--accent-amber); backdrop-filter: blur(6px); z-index: 10;
-  }
-  /* 아이소메트릭 브루펍 오피스 맵 */
-  .isometric-room {
-    width: 820px; height: 540px; position: relative;
-    background: linear-gradient(135deg, #2d231c 0%, #211914 100%);
-    border: 2px solid #4a3b31; border-radius: 24px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 0 80px rgba(224, 159, 62, 0.08);
-  }
-  /* 구역 데코레이션 (양조탱크/재즈무대/책상) */
-  .zone-label {
-    position: absolute; font-size: 11px; color: rgba(255,255,255,0.25);
-    letter-spacing: 1px; text-transform: uppercase; pointer-events: none;
-  }
-  .desk-zone {
-    position: absolute; border: 1px dashed rgba(224, 159, 62, 0.25);
-    background: rgba(255, 255, 255, 0.02); border-radius: 16px;
+    font-size: 13px; color: var(--accent-amber); backdrop-filter: blur(8px); z-index: 10;
   }
 
-  /* AI 직원 아바타 & 말풍선 */
+  .isometric-room {
+    width: 100%; max-width: 960px; aspect-ratio: 16 / 10; position: relative;
+    background-image: url('./office-bg.png');
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #4a3b31; border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    overflow: hidden;
+  }
+  .isometric-room::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.05) 45%, rgba(14, 11, 9, 0.55) 100%);
+    pointer-events: none;
+  }
+
   .agent-node {
     position: absolute; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; align-items: center;
     transition: all 0.4s ease; cursor: pointer; z-index: 5;
   }
-  .agent-node:hover { transform: translate(-50%, -54%) scale(1.05); z-index: 20; }
+  .agent-node:hover { transform: translate(-50%, -54%) scale(1.06); z-index: 20; }
 
   .speech-bubble {
-    background: #fffdf9; color: #1c1714; padding: 7px 12px; border-radius: 12px;
-    font-size: 12px; font-weight: 600; max-width: 190px; text-align: center;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.45); margin-bottom: 8px; position: relative;
-    line-height: 1.35; border: 1.5px solid var(--accent-amber);
+    background: rgba(255, 253, 249, 0.96); color: #1c1714; padding: 7px 12px; border-radius: 12px;
+    font-size: 12px; font-weight: 700; max-width: 195px; text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.65); margin-bottom: 8px; position: relative;
+    line-height: 1.35; border: 2px solid var(--accent-amber);
+    backdrop-filter: blur(4px);
   }
   .speech-bubble::after {
-    content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-    border-width: 6px 6px 0; border-style: solid; border-color: #fffdf9 transparent transparent;
+    content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
+    border-width: 7px 7px 0; border-style: solid; border-color: var(--accent-amber) transparent transparent;
   }
   .speech-bubble.idle {
-    background: #2b2420; color: #b5a89c; border-color: #4a3d35; font-weight: 400;
+    background: rgba(28, 23, 20, 0.88); color: #d6cbc1; border-color: #5c4d43; font-weight: 500;
   }
-  .speech-bubble.idle::after { border-color: #2b2420 transparent transparent; }
+  .speech-bubble.idle::after { border-color: #5c4d43 transparent transparent; }
 
   .avatar-circle {
-    width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 22px; background: #2e2520; border: 2px solid var(--accent-amber);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;
+    width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 21px; background: rgba(30, 24, 20, 0.92); border: 2px solid var(--accent-amber);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.7); position: relative;
   }
   .status-dot {
     width: 11px; height: 11px; border-radius: 50%; position: absolute; bottom: 0; right: 0;
@@ -81,12 +79,12 @@
   .status-wait { background: #f4a261; }
 
   .name-tag {
-    margin-top: 5px; background: rgba(15, 12, 10, 0.85); padding: 3px 9px;
+    margin-top: 5px; background: rgba(15, 12, 10, 0.9); padding: 3px 10px;
     border-radius: 10px; font-size: 11px; font-weight: 600; color: #f3ece4;
-    border: 1px solid #3d3129; white-space: nowrap;
+    border: 1px solid #4a3b31; white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
   }
 
-  /* 우측 사이드바 (노션 실시간 현황판) */
   .sidebar {
     width: 360px; background: var(--panel-bg); border-left: 1px solid var(--border-color);
     display: flex; flex-direction: column; padding: 20px; overflow-y: auto;
@@ -135,24 +133,7 @@
 
 <div class="office-viewport">
   <div class="top-badge">🍺 Phase 1: 군산비어포트 OEM · 전주/세종/서울 입지 분석 → Phase 2: 임실 자가 양조장</div>
-
-  <div class="isometric-room" id="office-map">
-    <!-- 구역 구획 -->
-    <div class="desk-zone" style="top: 35px; left: 35px; width: 350px; height: 210px;">
-      <div class="zone-label" style="top: 10px; left: 14px;">🧪 R&D & BREWING LAB (생산·양조팀)</div>
-    </div>
-    <div class="desk-zone" style="top: 35px; right: 35px; width: 370px; height: 210px;">
-      <div class="zone-label" style="top: 10px; left: 14px;">🗺️ STRATEGY & VENUE (기획·인허가팀)</div>
-    </div>
-    <div class="desk-zone" style="bottom: 35px; left: 35px; width: 350px; height: 210px;">
-      <div class="zone-label" style="top: 10px; left: 14px;">🎺 JAZZ & BRANDING LOUNGE (마케팅팀)</div>
-    </div>
-    <div class="desk-zone" style="bottom: 35px; right: 35px; width: 370px; height: 210px;">
-      <div class="zone-label" style="top: 10px; left: 14px;">📊 FINANCE & LOGISTICS (회계·비서실)</div>
-    </div>
-
-    <!-- AI 직원 노드들이 JS로 자동 배치됩니다 -->
-  </div>
+  <div class="isometric-room" id="office-map"></div>
 </div>
 
 <div class="sidebar">
@@ -192,13 +173,12 @@
 </div>
 
 <script>
-// 부서별 캐릭터 고정 좌표 및 프로필
 const AGENTS = [
-  { id: "생산·R&D팀", name: "Claude · 양조연구원", icon: "🌾", x: 25, y: 28 },
-  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 74, y: 28 },
-  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 25, y: 74 },
-  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 64, y: 74 },
-  { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 86, y: 74 }
+  { id: "생산·R&D팀", name: "Claude · 양조연구원", icon: "🌾", x: 26, y: 32 },
+  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 72, y: 30 },
+  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 28, y: 74 },
+  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 62, y: 76 },
+  { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 85, y: 70 }
 ];
 
 async function loadDashboard() {
@@ -227,7 +207,6 @@ function renderOffice(tasks, updatedAt) {
   document.getElementById('cnt-done').innerText = doneCnt;
   document.getElementById('last-updated').innerText = updatedAt || '방금 전';
 
-  // 캐릭터 및 말풍선 배치
   AGENTS.forEach(agent => {
     const deptTasks = tasks.filter(t => t.dept === agent.id);
     const activeTask = deptTasks.find(t => t.status.includes('진행')) || deptTasks[0];
@@ -258,7 +237,6 @@ function renderOffice(tasks, updatedAt) {
     map.appendChild(node);
   });
 
-  // 우측 업무 리스트 렌더링
   const listEl = document.getElementById('task-list');
   listEl.innerHTML = tasks.map(t => {
     let badgeClass = 'badge-wait';
@@ -279,7 +257,7 @@ function renderOffice(tasks, updatedAt) {
 }
 
 loadDashboard();
-setInterval(loadDashboard, 10000); // 10초마다 자동 새로고침
+setInterval(loadDashboard, 10000);
 </script>
 </body>
 </html>
