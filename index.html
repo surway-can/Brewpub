@@ -89,7 +89,7 @@
   /* 우측 사이드바 (노션 실시간 현황판) */
   .sidebar {
     width: 360px; background: var(--panel-bg); border-left: 1px solid var(--border-color);
-    display: flex; flex-direction: column; padding: 20px; overflow-y: auto;
+    display: flex; flex-direction: column; padding: 16px;
   }
   .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
   .logo-box {
@@ -100,22 +100,24 @@
   .sidebar-title h1 { font-size: 16px; font-weight: 700; }
   .sidebar-title p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
   .kpi-card {
     background: #26201c; border: 1px solid var(--border-color); border-radius: 12px;
-    padding: 12px 10px; text-align: center;
+    padding: 10px 8px; text-align: center;
   }
   .kpi-num { font-size: 20px; font-weight: 800; color: var(--accent-amber); }
   .kpi-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
   .section-title {
     font-size: 12px; font-weight: 700; color: var(--text-muted);
-    margin: 14px 0 10px; display: flex; justify-content: space-between;
+    margin: 10px 0 8px; display: flex; justify-content: space-between;
   }
-  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-list { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow-y: auto; padding-right: 2px; }
+  .task-list::-webkit-scrollbar { width: 6px; }
+  .task-list::-webkit-scrollbar-thumb { background: #3a3029; border-radius: 3px; }
   .task-item {
     background: #251f1b; border: 1px solid #332a24; border-radius: 10px;
-    padding: 10px 12px; font-size: 12.5px;
+    padding: 8px 10px; font-size: 12.5px;
   }
   .task-top { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
   .badge { padding: 2px 7px; border-radius: 6px; font-weight: 600; }
@@ -123,7 +125,7 @@
   .badge-wait { background: rgba(224, 159, 62, 0.18); color: #e09f3e; }
   .badge-done { background: rgba(78, 168, 222, 0.18); color: #4ea8de; }
   .task-name { font-weight: 600; color: var(--text-main); line-height: 1.4; }
-  .task-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .task-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
   .footer-sync {
     margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-color);
@@ -143,7 +145,7 @@
     <div class="logo-box">🍺</div>
     <div class="sidebar-title">
       <h1>가상 브루펍 AI 본부</h1>
-      <p>대표님 1인 기업 · AI 부서 4팀 가동 중</p>
+      <p>대표님 1인 기업 · AI 부서 5팀 가동 중</p>
     </div>
   </div>
 
@@ -181,7 +183,8 @@ const AGENTS = [
   { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 40, y: 35 },
   { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 59, y: 48 },
   { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 35, y: 66 },
-  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 81, y: 47 }
+  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 81, y: 47 },
+  { id: "검증·정리팀", name: "Muse · 검증/정리", icon: "🔍", x: 14, y: 72 }
 ];
 
 async function loadDashboard() {
@@ -219,6 +222,9 @@ function renderOffice(tasks, updatedAt) {
 
     if (agent.id === "비서실(총괄)") {
       bubbleText = `전체 ${tasks.length}건 파이프라인 감시 중!`;
+      isIdle = false;
+    } else if (agent.id === "검증·정리팀") {
+      bubbleText = "검증·정리 맡았습니다! 🔍";
       isIdle = false;
     } else if (activeTask) {
       bubbleText = activeTask.bubble || activeTask.title;
