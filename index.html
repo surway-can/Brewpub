@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가상 브루펍 AI 사무실 본부</title>
+<style>
+  :root {
+    --bg-dark: #14110f;
+    --panel-bg: #1e1916;
+    --border-color: #362c25;
+    --accent-amber: #e09f3e;
+    --accent-green: #4ea8de;
+    --text-main: #f3ece4;
+    --text-muted: #9e9185;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif; }
+  body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+  /* 좌측 메인 오피스 뷰 */
+  .office-viewport {
+    flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at center, #2b221c 0%, #14110f 100%);
+    overflow: hidden;
+  }
+  .top-badge {
+    position: absolute; top: 20px; left: 20px; background: rgba(30, 25, 22, 0.85);
+    border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px;
+    font-size: 13px; color: var(--accent-amber); backdrop-filter: blur(6px); z-index: 10;
+  }
+  /* 아이소메트릭 브루펍 오피스 맵 */
+  .isometric-room {
+    width: 820px; height: 540px; position: relative;
+    background: linear-gradient(135deg, #2d231c 0%, #211914 100%);
+    border: 2px solid #4a3b31; border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 0 80px rgba(224, 159, 62, 0.08);
+  }
+  /* 구역 데코레이션 (양조탱크/재즈무대/책상) */
+  .zone-label {
+    position: absolute; font-size: 11px; color: rgba(255,255,255,0.25);
+    letter-spacing: 1px; text-transform: uppercase; pointer-events: none;
+  }
+  .desk-zone {
+    position: absolute; border: 1px dashed rgba(224, 159, 62, 0.25);
+    background: rgba(255, 255, 255, 0.02); border-radius: 16px;
+  }
+
+  /* AI 직원 아바타 & 말풍선 */
+  .agent-node {
+    position: absolute; transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center;
+    transition: all 0.4s ease; cursor: pointer; z-index: 5;
+  }
+  .agent-node:hover { transform: translate(-50%, -54%) scale(1.05); z-index: 20; }
+
+  .speech-bubble {
+    background: #fffdf9; color: #1c1714; padding: 7px 12px; border-radius: 12px;
+    font-size: 12px; font-weight: 600; max-width: 190px; text-align: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.45); margin-bottom: 8px; position: relative;
+    line-height: 1.35; border: 1.5px solid var(--accent-amber);
+  }
+  .speech-bubble::after {
+    content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+    border-width: 6px 6px 0; border-style: solid; border-color: #fffdf9 transparent transparent;
+  }
+  .speech-bubble.idle {
+    background: #2b2420; color: #b5a89c; border-color: #4a3d35; font-weight: 400;
+  }
+  .speech-bubble.idle::after { border-color: #2b2420 transparent transparent; }
+
+  .avatar-circle {
+    width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; background: #2e2520; border: 2px solid var(--accent-amber);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;
+  }
+  .status-dot {
+    width: 11px; height: 11px; border-radius: 50%; position: absolute; bottom: 0; right: 0;
+    border: 2px solid #1e1916;
+  }
+  .status-active { background: #38b000; box-shadow: 0 0 8px #38b000; }
+  .status-wait { background: #f4a261; }
+
+  .name-tag {
+    margin-top: 5px; background: rgba(15, 12, 10, 0.85); padding: 3px 9px;
+    border-radius: 10px; font-size: 11px; font-weight: 600; color: #f3ece4;
+    border: 1px solid #3d3129; white-space: nowrap;
+  }
+
+  /* 우측 사이드바 (노션 실시간 현황판) */
+  .sidebar {
+    width: 360px; background: var(--panel-bg); border-left: 1px solid var(--border-color);
+    display: flex; flex-direction: column; padding: 20px; overflow-y: auto;
+  }
+  .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .logo-box {
+    width: 42px; height: 42px; border-radius: 12px; background: var(--accent-amber);
+    color: #14110f; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px;
+  }
+  .sidebar-title h1 { font-size: 16px; font-weight: 700; }
+  .sidebar-title p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+  .kpi-card {
+    background: #26201c; border: 1px solid var(--border-color); border-radius: 12px;
+    padding: 12px 10px; text-align: center;
+  }
+  .kpi-num { font-size: 20px; font-weight: 800; color: var(--accent-amber); }
+  .kpi-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  .section-title {
+    font-size: 12px; font-weight: 700; color: var(--text-muted);
+    margin: 14px 0 10px; display: flex; justify-content: space-between;
+  }
+  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-item {
+    background: #251f1b; border: 1px solid #332a24; border-radius: 10px;
+    padding: 10px 12px; font-size: 12.5px;
+  }
+  .task-top { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
+  .badge { padding: 2px 7px; border-radius: 6px; font-weight: 600; }
+  .badge-progress { background: rgba(56, 176, 0, 0.18); color: #70e000; }
+  .badge-wait { background: rgba(224, 159, 62, 0.18); color: #e09f3e; }
+  .badge-done { background: rgba(78, 168, 222, 0.18); color: #4ea8de; }
+  .task-name { font-weight: 600; color: var(--text-main); line-height: 1.4; }
+  .task-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  .footer-sync {
+    margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-color);
+    font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div class="office-viewport">
+  <div class="top-badge">🍺 Phase 1: 군산비어포트 OEM · 전주/세종/서울 입지 분석 → Phase 2: 임실 자가 양조장</div>
+
+  <div class="isometric-room" id="office-map">
+    <!-- 구역 구획 -->
+    <div class="desk-zone" style="top: 35px; left: 35px; width: 350px; height: 210px;">
+      <div class="zone-label" style="top: 10px; left: 14px;">🧪 R&D & BREWING LAB (생산·양조팀)</div>
+    </div>
+    <div class="desk-zone" style="top: 35px; right: 35px; width: 370px; height: 210px;">
+      <div class="zone-label" style="top: 10px; left: 14px;">🗺️ STRATEGY & VENUE (기획·인허가팀)</div>
+    </div>
+    <div class="desk-zone" style="bottom: 35px; left: 35px; width: 350px; height: 210px;">
+      <div class="zone-label" style="top: 10px; left: 14px;">🎺 JAZZ & BRANDING LOUNGE (마케팅팀)</div>
+    </div>
+    <div class="desk-zone" style="bottom: 35px; right: 35px; width: 370px; height: 210px;">
+      <div class="zone-label" style="top: 10px; left: 14px;">📊 FINANCE & LOGISTICS (회계·비서실)</div>
+    </div>
+
+    <!-- AI 직원 노드들이 JS로 자동 배치됩니다 -->
+  </div>
+</div>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-box">🍺</div>
+    <div class="sidebar-title">
+      <h1>가상 브루펍 AI 본부</h1>
+      <p>대표님 1인 기업 · AI 부서 4팀 가동 중</p>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-num" id="cnt-progress">0</div>
+      <div class="kpi-label">진행 중</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num" id="cnt-wait">0</div>
+      <div class="kpi-label">대기 중</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num" id="cnt-done">0</div>
+      <div class="kpi-label">완료됨</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span>📋 노션 본부 실시간 업무 보드</span>
+    <span id="phase-tag">ALL PHASES</span>
+  </div>
+  <div class="task-list" id="task-list"></div>
+
+  <div class="footer-sync">
+    <span>Notion API 동기화</span>
+    <span id="last-updated">갱신 대기 중</span>
+  </div>
+</div>
+
+<script>
+// 부서별 캐릭터 고정 좌표 및 프로필
+const AGENTS = [
+  { id: "생산·R&D팀", name: "Claude · 양조연구원", icon: "🌾", x: 25, y: 28 },
+  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 74, y: 28 },
+  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 25, y: 74 },
+  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 64, y: 74 },
+  { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 86, y: 74 }
+];
+
+async function loadDashboard() {
+  try {
+    const res = await fetch('./status.json?t=' + Date.now());
+    const data = await res.json();
+    renderOffice(data.tasks || [], data.updated_at || '');
+  } catch (e) {
+    console.error("status.json 로드 실패:", e);
+  }
+}
+
+function renderOffice(tasks, updatedAt) {
+  const map = document.getElementById('office-map');
+  document.querySelectorAll('.agent-node').forEach(el => el.remove());
+
+  let progressCnt = 0, waitCnt = 0, doneCnt = 0;
+  tasks.forEach(t => {
+    if (t.status.includes('진행')) progressCnt++;
+    else if (t.status.includes('완료')) doneCnt++;
+    else waitCnt++;
+  });
+
+  document.getElementById('cnt-progress').innerText = progressCnt;
+  document.getElementById('cnt-wait').innerText = waitCnt;
+  document.getElementById('cnt-done').innerText = doneCnt;
+  document.getElementById('last-updated').innerText = updatedAt || '방금 전';
+
+  // 캐릭터 및 말풍선 배치
+  AGENTS.forEach(agent => {
+    const deptTasks = tasks.filter(t => t.dept === agent.id);
+    const activeTask = deptTasks.find(t => t.status.includes('진행')) || deptTasks[0];
+
+    let bubbleText = "다음 지시 대기 중 ☕";
+    let isIdle = true;
+
+    if (agent.id === "비서실(총괄)") {
+      bubbleText = `전체 ${tasks.length}건 파이프라인 감시 중!`;
+      isIdle = false;
+    } else if (activeTask) {
+      bubbleText = activeTask.bubble || activeTask.title;
+      isIdle = !activeTask.status.includes('진행');
+    }
+
+    const node = document.createElement('div');
+    node.className = 'agent-node';
+    node.style.left = agent.x + '%';
+    node.style.top = agent.y + '%';
+    node.innerHTML = `
+      <div class="speech-bubble ${isIdle ? 'idle' : ''}">${bubbleText}</div>
+      <div class="avatar-circle">
+        ${agent.icon}
+        <span class="status-dot ${isIdle ? 'status-wait' : 'status-active'}"></span>
+      </div>
+      <div class="name-tag">${agent.name}</div>
+    `;
+    map.appendChild(node);
+  });
+
+  // 우측 업무 리스트 렌더링
+  const listEl = document.getElementById('task-list');
+  listEl.innerHTML = tasks.map(t => {
+    let badgeClass = 'badge-wait';
+    if (t.status.includes('진행')) badgeClass = 'badge-progress';
+    else if (t.status.includes('완료')) badgeClass = 'badge-done';
+
+    return `
+      <div class="task-item">
+        <div class="task-top">
+          <span style="color:#e09f3e; font-weight:600;">${t.dept}</span>
+          <span class="badge ${badgeClass}">${t.status}</span>
+        </div>
+        <div class="task-name">${t.title}</div>
+        <div class="task-meta">담당: ${t.ai} · ${t.phase}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+loadDashboard();
+setInterval(loadDashboard, 10000); // 10초마다 자동 새로고침
+</script>
+</body>
+</html>
