@@ -44,46 +44,56 @@
     box-shadow: 0 28px 60px rgba(0,0,0,0.55);
   }
 
-  /* AI 직원 아바타 & 말풍선 */
+  /* AI 직원 사람 캐릭터 & 말풍선 */
   .agent-node {
     position: absolute; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; align-items: center;
-    transition: all 0.4s ease; cursor: pointer; z-index: 5;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1); cursor: pointer; z-index: 5;
   }
-  .agent-node:hover { transform: translate(-50%, -55%) scale(1.07); z-index: 20; }
+  .agent-node:hover { transform: translate(-50%, -56%) scale(1.08); z-index: 30; }
 
   .speech-bubble {
-    background: rgba(255, 253, 249, 0.97); color: #1c1714; padding: 6px 11px; border-radius: 12px;
-    font-size: 11.5px; font-weight: 700; max-width: 175px; text-align: center;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.35); margin-bottom: 6px; position: relative;
-    line-height: 1.35; border: 2px solid var(--accent-amber);
+    background: rgba(255, 253, 249, 0.97); color: #1c1714; padding: 5px 10px; border-radius: 11px;
+    font-size: 11px; font-weight: 700; max-width: 165px; text-align: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.38); margin-bottom: 4px; position: relative;
+    line-height: 1.3; border: 2px solid var(--accent-amber);
   }
   .speech-bubble::after {
-    content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
-    border-width: 7px 7px 0; border-style: solid; border-color: var(--accent-amber) transparent transparent;
+    content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+    border-width: 6px 6px 0; border-style: solid; border-color: var(--accent-amber) transparent transparent;
   }
   .speech-bubble.idle {
-    background: rgba(34, 28, 24, 0.9); color: #e6dcd3; border-color: #6e5c4f; font-weight: 500;
+    background: rgba(34, 28, 24, 0.92); color: #e6dcd3; border-color: #6e5c4f; font-weight: 500;
   }
   .speech-bubble.idle::after { border-color: #6e5c4f transparent transparent; }
 
-  .avatar-circle {
-    width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 19px; background: rgba(30, 24, 20, 0.94); border: 2px solid var(--accent-amber);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.45); position: relative;
+  /* 사람 모양 캐릭터 컨테이너 */
+  .character-wrap {
+    width: 54px; height: 58px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.5));
+    animation: floatIdle 3.2s ease-in-out infinite;
   }
+  .agent-node:nth-child(even) .character-wrap {
+    animation-delay: 1.4s;
+  }
+  @keyframes floatIdle {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+  }
+
   .status-dot {
-    width: 10px; height: 10px; border-radius: 50%; position: absolute; bottom: 0; right: 0;
-    border: 2px solid #1e1916;
+    width: 11px; height: 11px; border-radius: 50%; position: absolute; bottom: 4px; right: 4px;
+    border: 2px solid #1e1916; z-index: 2;
   }
   .status-active { background: #38b000; box-shadow: 0 0 8px #38b000; }
   .status-wait { background: #f4a261; }
 
   .name-tag {
-    margin-top: 4px; background: rgba(20, 16, 13, 0.9); padding: 2px 9px;
+    margin-top: 2px; background: rgba(20, 16, 13, 0.92); padding: 2px 9px;
     border-radius: 10px; font-size: 10.5px; font-weight: 600; color: #f3ece4;
     border: 1px solid #59483c; white-space: nowrap;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.45);
   }
 
   /* 우측 사이드바 (노션 실시간 현황판) */
@@ -145,7 +155,7 @@
     <div class="logo-box">🍺</div>
     <div class="sidebar-title">
       <h1>가상 브루펍 AI 본부</h1>
-      <p>대표님 1인 기업 · AI 부서 5팀 가동 중</p>
+      <p>대표님 1인 기업 · AI 부서 6팀 가동 중</p>
     </div>
   </div>
 
@@ -177,14 +187,134 @@
 </div>
 
 <script>
-// 일러스트 속 의자와 소파 위치에 맞춘 정밀 좌표
+// 직업별 사람 모양 SVG 캐릭터 생성기
+function getCharacterSVG(type) {
+  const characters = {
+    // Claude: 앞치마와 보리 모자를 쓴 양조연구원
+    brewer: `
+      <svg viewBox="0 0 64 68" width="52" height="56">
+        <ellipse cx="32" cy="63" rx="16" ry="4" fill="rgba(0,0,0,0.35)"/>
+        <!-- 몸통 & 브루어 앞치마 -->
+        <path d="M16 58 C16 43, 48 43, 48 58 Z" fill="#d97706"/>
+        <path d="M22 45 L42 45 L40 59 L24 59 Z" fill="#fef3c7"/>
+        <path d="M25 45 L25 40 M39 45 L39 40" stroke="#92400e" stroke-width="2.5"/>
+        <!-- 얼굴 -->
+        <circle cx="32" cy="27" r="13" fill="#fde68a"/>
+        <!-- 머리카락 & 캡모자 -->
+        <path d="M19 25 C19 14, 45 14, 45 25 Z" fill="#78350f"/>
+        <path d="M20 22 L47 22 L44 19 L22 19 Z" fill="#b45309"/>
+        <!-- 눈 & 미소 -->
+        <circle cx="27.5" cy="27" r="1.7" fill="#1c1917"/>
+        <circle cx="36.5" cy="27" r="1.7" fill="#1c1917"/>
+        <path d="M29 31.5 Q32 34.5 35 31.5" stroke="#1c1917" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <!-- 손에 든 황금 맥주잔 -->
+        <rect x="44" y="42" width="9" height="12" rx="2" fill="#f59e0b" stroke="#fff" stroke-width="1.2"/>
+        <rect x="44" y="40" width="9" height="3.5" rx="1.5" fill="#ffffff"/>
+      </svg>`,
+    // Gemini: 나침반과 지도 노트를 든 기획/입지 대리
+    planner: `
+      <svg viewBox="0 0 64 68" width="52" height="56">
+        <ellipse cx="32" cy="63" rx="16" ry="4" fill="rgba(0,0,0,0.35)"/>
+        <!-- 네이비 블레이저 재킷 -->
+        <path d="M16 58 C16 43, 48 43, 48 58 Z" fill="#2563eb"/>
+        <path d="M28 44 L32 52 L36 44 Z" fill="#ffffff"/>
+        <!-- 얼굴 -->
+        <circle cx="32" cy="27" r="13" fill="#fed7aa"/>
+        <!-- 단정한 헤어 -->
+        <path d="M19 26 C19 12, 45 12, 45 26 C43 20, 35 18, 28 21 C24 22, 21 24, 19 26 Z" fill="#1e293b"/>
+        <!-- 눈 & 미소 -->
+        <circle cx="27.5" cy="27" r="1.7" fill="#1c1917"/>
+        <circle cx="36.5" cy="27" r="1.7" fill="#1c1917"/>
+        <path d="M29 31.5 Q32 34 35 31.5" stroke="#1c1917" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <!-- 지도/태블릿 -->
+        <rect x="42" y="43" width="12" height="10" rx="2" fill="#38bdf8" stroke="#fff" stroke-width="1.3"/>
+      </svg>`,
+    // 해이: 페도라 중절모와 넥타이를 맨 총괄 비서실장
+    chief: `
+      <svg viewBox="0 0 64 68" width="54" height="58">
+        <ellipse cx="32" cy="63" rx="17" ry="4" fill="rgba(0,0,0,0.4)"/>
+        <!-- 다크 수트 & 골드 넥타이 -->
+        <path d="M15 58 C15 42, 49 42, 49 58 Z" fill="#1c1917"/>
+        <path d="M27 43 L32 54 L37 43 Z" fill="#f3ece4"/>
+        <path d="M31 44 L33 44 L33.5 53 L32 55 L30.5 53 Z" fill="#e09f3e"/>
+        <!-- 얼굴 -->
+        <circle cx="32" cy="28" r="13" fill="#fde68a"/>
+        <!-- 비서실장 페도라 중절모 -->
+        <ellipse cx="32" cy="18" rx="18" ry="3.5" fill="#292524"/>
+        <path d="M21 18 C22 9, 42 9, 43 18 Z" fill="#44403c"/>
+        <rect x="21" y="15.5" width="22" height="2.2" fill="#e09f3e"/>
+        <!-- 눈 & 자신감 있는 미소 -->
+        <circle cx="27.5" cy="28" r="1.7" fill="#1c1917"/>
+        <circle cx="36.5" cy="28" r="1.7" fill="#1c1917"/>
+        <path d="M28.5 32.5 Q32 35.5 35.5 32.5" stroke="#1c1917" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+      </svg>`,
+    // Python: 둥근 안경과 차트 보드를 든 회계·재무 분석가
+    finance: `
+      <svg viewBox="0 0 64 68" width="52" height="56">
+        <ellipse cx="32" cy="63" rx="16" ry="4" fill="rgba(0,0,0,0.35)"/>
+        <!-- 포레스트 그린 니트 베스트 -->
+        <path d="M16 58 C16 43, 48 43, 48 58 Z" fill="#059669"/>
+        <path d="M27 43 L32 50 L37 43 Z" fill="#ecfdf5"/>
+        <!-- 얼굴 -->
+        <circle cx="32" cy="27" r="13" fill="#fed7aa"/>
+        <path d="M19 25 C19 13, 45 13, 45 25 C41 19, 23 19, 19 25 Z" fill="#3f2e21"/>
+        <!-- 둥근 안경 -->
+        <circle cx="27" cy="27" r="4" stroke="#1c1917" stroke-width="1.5" fill="rgba(255,255,255,0.25)"/>
+        <circle cx="37" cy="27" r="4" stroke="#1c1917" stroke-width="1.5" fill="rgba(255,255,255,0.25)"/>
+        <line x1="31" y1="27" x2="33" y2="27" stroke="#1c1917" stroke-width="1.5"/>
+        <circle cx="27" cy="27" r="1.4" fill="#1c1917"/>
+        <circle cx="37" cy="27" r="1.4" fill="#1c1917"/>
+        <path d="M29.5 32 Q32 34 34.5 32" stroke="#1c1917" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+    // ChatGPT: 베레모와 스카프를 두른 재즈/마케팅 디렉터
+    jazz: `
+      <svg viewBox="0 0 64 68" width="52" height="56">
+        <ellipse cx="32" cy="63" rx="16" ry="4" fill="rgba(0,0,0,0.35)"/>
+        <!-- 버건디 재즈 셔츠 -->
+        <path d="M16 58 C16 43, 48 43, 48 58 Z" fill="#be123c"/>
+        <path d="M26 44 Q32 49 38 44" stroke="#fde047" stroke-width="2.5" fill="none"/>
+        <!-- 얼굴 -->
+        <circle cx="32" cy="28" r="13" fill="#fde68a"/>
+        <!-- 아티스트 베레모 -->
+        <ellipse cx="34" cy="16" rx="14" ry="5.5" transform="rotate(-10 34 16)" fill="#881337"/>
+        <!-- 선글라스/눈 & 미소 -->
+        <circle cx="27.5" cy="28" r="1.7" fill="#1c1917"/>
+        <circle cx="36.5" cy="28" r="1.7" fill="#1c1917"/>
+        <path d="M29 32.5 Q32 35.5 35 32.5" stroke="#1c1917" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <!-- 황금 음표 배지 -->
+        <text x="43" y="52" font-size="14" fill="#fde047">♪</text>
+      </svg>`,
+    // Muse: 돋보기를 든 꼼꼼한 검증·정리 감사관
+    qa: `
+      <svg viewBox="0 0 64 68" width="52" height="56">
+        <ellipse cx="32" cy="63" rx="16" ry="4" fill="rgba(0,0,0,0.35)"/>
+        <!-- 바이올렛 가디건 -->
+        <path d="M16 58 C16 43, 48 43, 48 58 Z" fill="#7c3aed"/>
+        <path d="M28 43 L32 51 L36 43 Z" fill="#f5f3ff"/>
+        <!-- 얼굴 & 단발 헤어 -->
+        <path d="M18 33 C17 14, 47 14, 46 33 Z" fill="#312e81"/>
+        <circle cx="32" cy="27" r="12.5" fill="#fed7aa"/>
+        <path d="M20 24 C24 18, 40 18, 44 24 C42 15, 22 15, 20 24 Z" fill="#312e81"/>
+        <!-- 눈 & 미소 -->
+        <circle cx="27.5" cy="27" r="1.6" fill="#1c1917"/>
+        <circle cx="36.5" cy="27" r="1.6" fill="#1c1917"/>
+        <path d="M29.5 31.5 Q32 34 34.5 31.5" stroke="#1c1917" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- 손에 든 검증 돋보기 -->
+        <circle cx="46" cy="46" r="5.5" stroke="#fef08a" stroke-width="2.2" fill="rgba(255,255,255,0.35)"/>
+        <line x1="50" y1="50" x2="54" y2="55" stroke="#fef08a" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>`
+  };
+  return characters[type] || characters.chief;
+}
+
+// 일러스트 속 의자와 소파 위치에 맞춘 정밀 좌표 (Muse를 회의 테이블 우측 의자로 재배치!)
 const AGENTS = [
-  { id: "생산·R&D팀", name: "Claude · 양조연구원", icon: "🌾", x: 27, y: 42 },
-  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", icon: "🧭", x: 40, y: 35 },
-  { id: "비서실(총괄)", name: "해이 · 비서실장", icon: "🎩", x: 59, y: 48 },
-  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", icon: "📈", x: 35, y: 66 },
-  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", icon: "🎷", x: 81, y: 47 },
-  { id: "검증·정리팀", name: "Muse · 검증/정리", icon: "🔍", x: 14, y: 72 }
+  { id: "생산·R&D팀", name: "Claude · 양조연구원", avatar: "brewer", x: 26, y: 42 },
+  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", avatar: "planner", x: 39, y: 34 },
+  { id: "비서실(총괄)", name: "해이 · 비서실장", avatar: "chief", x: 59, y: 47 },
+  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", avatar: "finance", x: 32, y: 65 },
+  { id: "검증·정리팀", name: "Muse · 검증/정리", avatar: "qa", x: 47, y: 68 },
+  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", avatar: "jazz", x: 81, y: 47 }
 ];
 
 async function loadDashboard() {
@@ -223,9 +353,6 @@ function renderOffice(tasks, updatedAt) {
     if (agent.id === "비서실(총괄)") {
       bubbleText = `전체 ${tasks.length}건 파이프라인 감시 중!`;
       isIdle = false;
-    } else if (agent.id === "검증·정리팀") {
-      bubbleText = "검증·정리 맡았습니다! 🔍";
-      isIdle = false;
     } else if (activeTask) {
       bubbleText = activeTask.bubble || activeTask.title;
       isIdle = !activeTask.status.includes('진행');
@@ -237,8 +364,8 @@ function renderOffice(tasks, updatedAt) {
     node.style.top = agent.y + '%';
     node.innerHTML = `
       <div class="speech-bubble ${isIdle ? 'idle' : ''}">${bubbleText}</div>
-      <div class="avatar-circle">
-        ${agent.icon}
+      <div class="character-wrap">
+        ${getCharacterSVG(agent.avatar)}
         <span class="status-dot ${isIdle ? 'status-wait' : 'status-active'}"></span>
       </div>
       <div class="name-tag">${agent.name}</div>
