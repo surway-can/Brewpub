@@ -1,6 +1,22 @@
 {
-  "updated_at": "2026-11-16 05:07 KST",
+  "updated_at": "2026-11-16 05:48 KST",
   "tasks": [
+    {
+      "title": "FRANCISCO BREWING 종합 마스터 사업계획서 v1.3",
+      "dept": "회계·재무팀",
+      "ai": "Claude (기획/분석)",
+      "status": "완료",
+      "phase": "Phase 1 (계약양조/펍)",
+      "bubble": "종합 마스터 사업계획서 v1.3 완성"
+    },
+    {
+      "title": "교차 검증 감사 보고서 — FRANCISCO BREWING 종합 마스터 사업계획서 v1.1",
+      "dept": "검증·정리팀",
+      "ai": "Muse (검증/정리)",
+      "status": "완료",
+      "phase": "Phase 1 (계약양조/펍)",
+      "bubble": "FRANCISCO BREWING 종합 마스터 사업계획서 v1.1 검증 완료"
+    },
     {
       "title": "교차 검증 감사 보고서 — 3대 후보지 비교표 (세종 vs 전주 vs 서울)",
       "dept": "검증·정리팀",
