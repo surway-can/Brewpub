@@ -36,7 +36,7 @@
     width: min(88vh, 820px);
     aspect-ratio: 1 / 1;
     position: relative;
-    background-image: url('./office-bg.png');
+    background-image: url('./office-bg.png?v=3');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -288,13 +288,13 @@ function getCharacterSVG(type) {
 
 // 7인 AI 본부 정밀 배치 좌표
 const AGENTS = [
-  { id: "생산·R&D팀", name: "Claude · 양조연구원", avatar: "brewer", x: 26, y: 42 },
-  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", avatar: "planner", x: 39, y: 34 },
-  { id: "비서실(총괄)", name: "해이 · 비서실장", avatar: "chief", x: 59, y: 46 },
-  { id: "개인실무·외부실행팀", name: "피클(레오) · 실행비서", avatar: "operator", x: 69, y: 63 },
-  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", avatar: "finance", x: 32, y: 65 },
-  { id: "검증·정리팀", name: "Muse · 검증/정리", avatar: "qa", x: 47, y: 68 },
-  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", avatar: "jazz", x: 81, y: 47 }
+  { id: "생산·R&D팀", name: "Claude · 양조연구원", avatar: "brewer", x: 18, y: 42 },
+  { id: "기획·인허가팀", name: "Gemini · 입지/규정대리", avatar: "planner", x: 38, y: 27 },
+  { id: "비서실(총괄)", name: "해이 · 비서실장", avatar: "chief", x: 64, y: 31 },
+  { id: "개인실무·외부실행팀", name: "피클(레오) · 실행비서", avatar: "operator", x: 24, y: 69 },
+  { id: "회계·재무팀", name: "Python · 원가/BEP분석가", avatar: "finance", x: 43, y: 49 },
+  { id: "검증·정리팀", name: "Muse · 검증/정리", avatar: "qa", x: 56, y: 55 },
+  { id: "마케팅·브랜딩팀", name: "ChatGPT · 재즈/홍보팀장", avatar: "jazz", x: 84, y: 57 }
 ];
 
 async function loadDashboard() {
