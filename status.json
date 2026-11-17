@@ -1,6 +1,14 @@
 {
-  "updated_at": "2026-11-17 09:50 KST",
+  "updated_at": "2026-11-17 11:02 KST",
   "tasks": [
+    {
+      "title": "[숏폼 콘텐츠] Nitro Irish Stout 캔입 액체질소 릴스/쇼츠 스크립트",
+      "dept": "마케팅·브랜딩팀",
+      "ai": "ChatGPT (카피/아이디어)",
+      "status": "완료",
+      "phase": "공통/상시",
+      "bubble": "액체질소 도징 장면 중심의 40초 릴스/쇼츠 자막 스크립트 및 업로드 메타데이터"
+    },
     {
       "title": "FRANCISCO BREWING 종합 마스터 사업계획서 v1.3",
       "dept": "회계·재무팀",
